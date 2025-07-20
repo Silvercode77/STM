@@ -53,7 +53,7 @@ void GPIO_Write_Pin(GPIO_TypeDef* GPIOx,BITVAL Bit,PIN_NUMBER Pin ){
 	}
 	
 	void GPIO_Toggle_Pin(GPIO_TypeDef* GPIOx,PIN_NUMBER Pin){
-		GENERAL_TOGGLEBIT(GPIOx->ODR, HIGH, Pin);
+		GENERAL_TOGGLEBIT(GPIOx->ODR, HIGH, Pin)  ;
 	}
 	
 	
