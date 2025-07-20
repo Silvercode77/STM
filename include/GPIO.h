@@ -50,6 +50,32 @@ typedef enum  {
 
 	} PIN_NUMBER;
 
+
+	typedef enum {
+
+    Pin0   = 0x0001,
+    Pin1   = 0x0002,
+    Pin2   = 0x0004,
+    Pin3   = 0x0008,
+    Pin4   = 0x0010,
+    Pin5   = 0x0020,
+    Pin6   = 0x0040,
+    Pin7   = 0x0080,
+    Pin8   = 0x0100,
+    Pin9   = 0x0200,
+    Pin10  = 0x0400,
+    Pin11  = 0x0800,
+    Pin12  = 0x1000,
+    Pin13  = 0x2000,
+    Pin14  = 0x4000,
+    Pin15  = 0x8000,
+    PinAll = 0xFFFF
+} PinPosition;
+
+
+		
+
+
 	
 			
 	typedef enum{
@@ -109,10 +135,10 @@ typedef enum  {
 		
 		
 		
-void GPIO_MODER_CONFIGURATION(GPIO_TypeDef* GPIOx,CONFIGURATION CONF_Bit,PIN_NUMBER Pin );
-void GPIO_OTYPER_CONFIGURATION(GPIO_TypeDef* GPIOx,CONFIGURATION CONF_Bit,PIN_NUMBER Pin );
-void GPIO_OSPEEDR_CONFIGURATION(GPIO_TypeDef* GPIOx,CONFIGURATION CONF_Bit,PIN_NUMBER Pin );
-void GPIO_PUPDR_CONFIGURATION(GPIO_TypeDef* GPIOx,CONFIGURATION CONF_Bit,PIN_NUMBER Pin );	
+void GPIO_MODER_CONFIGURATION(GPIO_TypeDef* GPIOx,CONFIGURATION CONF_Bit,PinPosition Pin);
+void GPIO_OTYPER_CONFIGURATION(GPIO_TypeDef* GPIOx,CONFIGURATION CONF_Bit,PinPosition Pin );
+void GPIO_OSPEEDR_CONFIGURATION(GPIO_TypeDef* GPIOx,CONFIGURATION CONF_Bit,PinPosition Pin );
+void GPIO_PUPDR_CONFIGURATION(GPIO_TypeDef* GPIOx,CONFIGURATION CONF_Bit,PinPosition Pin );	
 	
 void GPIO_Write_Pin(GPIO_TypeDef* GPIOx,BITVAL Bit,PIN_NUMBER Pin );
 	

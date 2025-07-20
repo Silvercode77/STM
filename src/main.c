@@ -13,19 +13,15 @@ int main()
     SysTick->CTRL |= (SysTick_CTRL_ENABLE_Msk | SysTick_CTRL_CLKSOURCE_Msk);
     SysTick->LOAD |= (800000 - 1);
 
-    RCC->AHB1RSTR |= RCC_AHB1RSTR_GPIODRST;
-    RCC->AHB1RSTR &= ~(RCC_AHB1RSTR_GPIODRST);
-
-    RCC->AHB1RSTR |= RCC_AHB1RSTR_GPIOARST;
-    RCC->AHB1RSTR &= ~(RCC_AHB1RSTR_GPIOARST);
+    GPIO_RESET(GPIO_A);
+    GPIO_RESET(GPIO_D);
 
     RCC->AHB1ENR |= RCC_AHB1ENR_GPIODEN;
     RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
 
     RCC->APB2ENR |= RCC_APB2ENR_SYSCFGEN;
 
-    GPIOD->MODER &= ~((3 << 9 * 2) | (3 << (12 * 2) | (3 << 0)));
-    GPIOD->MODER |= ((GPIO_MODER_INPUT << (9 * 2)) | (GPIO_MODER_OUTPUT << (12 * 2)));
+    GPIO_MODER_CONFIGURATION(GPIOD,GPIO_MODER_OUTPUT,(Pin12|Pin13|Pin14|Pin15));
 
     /*GPIOD->PUPDR &= ~(3 << (9 * 2));
     GPIOD->PUPDR |= (GPIO_PULLUP << (9 * 2));*/
@@ -73,7 +69,8 @@ void EXTI0_IRQHandler()
     if (EXTI->PR & (1 << 0))
     {
         GPIOD->ODR ^= (1 << 12);
-        while (!(SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk));
+        while (!(SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk))
+            ;
         EXTI->PR = (1 << 0);
     }
 }
