@@ -1,76 +1,63 @@
 #include "stm32f407xx.h"
 #include "GPIO.h"
-int main()
+
+void GPIO_Init(void);
+void delay_ms(uint32_t ms);
+
+volatile uint32_t tick_count = 0;
+
+int main(void)
 {
 
-    RCC->CR |= RCC_CR_HSION_Msk;
-    while (!(RCC->CR & RCC_CR_HSIRDY_Msk))
-        ;
-
-    RCC->CFGR |= RCC_CFGR_SW_HSI;
-    RCC->CFGR |= RCC_CFGR_HPRE_DIV1;
-
-    SysTick->CTRL |= (SysTick_CTRL_ENABLE_Msk | SysTick_CTRL_CLKSOURCE_Msk);
-    SysTick->LOAD |= (800000 - 1);
-
-    GPIO_RESET(GPIO_A);
-    GPIO_RESET(GPIO_D);
-
-    RCC->AHB1ENR |= RCC_AHB1ENR_GPIODEN;
-    RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
-
-    RCC->APB2ENR |= RCC_APB2ENR_SYSCFGEN;
-
-    GPIO_MODER_CONFIGURATION(GPIOD,GPIO_MODER_OUTPUT,(Pin12|Pin13|Pin14|Pin15));
-
-    /*GPIOD->PUPDR &= ~(3 << (9 * 2));
-    GPIOD->PUPDR |= (GPIO_PULLUP << (9 * 2));*/
-    GENERAL_CFGRBIT(GPIOD->PUPDR, GPIO_PULLUP, 9 * 2, 2);
-
-    GPIO_MODER_CONFIGURATION(GPIOA, GPIO_MODER_INPUT, 0);
-    GPIO_PUPDR_CONFIGURATION(GPIOA, GPIO_PULLDOWN, 0);
-
-    SYSCFG->EXTICR[2] &= ~(0xF << 4);
-    SYSCFG->EXTICR[2] |= (0x3 << 4);
-
-    SYSCFG->EXTICR[0] &= ~(0xF << 0);
-
-    EXTI->IMR |= (EXTI_IMR_MR9);
-    EXTI->RTSR &= ~(EXTI_RTSR_TR9);
-    EXTI->FTSR |= (EXTI_FTSR_TR9);
-
-    SYSCFG->EXTICR[0] &= ~(0xF << 0); // EXTI0 connected to PA0
-
-    EXTI->IMR |= (1 << 0);   // Unmask EXTI0
-    EXTI->RTSR &= ~(1 << 0); // Disable rising edge
-    EXTI->FTSR |= (1 << 0);  // Enable falling edge (button press)
-
-    NVIC_SetPriority(EXTI0_IRQn, 1); // Priority
-    NVIC_EnableIRQ(EXTI0_IRQn);      // Enable interrupt
+    GPIO_Init();
+    SysTick_Config(SystemCoreClock);
 
     while (1)
     {
     }
 }
 
-void EXTI9_5_IRQHandler()
+void GPIO_Init(void)
 {
-    if (EXTI->PR & (1 << 9))
-    {
-        GPIOD->ODR ^= (1 << 12);
-        EXTI->PR = (1 << 9);
-        while (!(SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk))
-            ;
-    }
+
+    RCC->AHB1ENR |= RCC_AHB1ENR_GPIODEN;
+
+    GPIO_MODER_CONFIGURATION(GPIOD, GPIO_MODER_OUTPUT, Pin12 | Pin13 | Pin14 | Pin15);
+}
+void delay_ms(uint32_t ms)
+{
+    tick_count = 0;
+    while (tick_count < ms)
+        ;
 }
 
-void EXTI0_IRQHandler()
+// SysTick Handler
+void SysTick_Handler(void)
 {
-    if (EXTI->PR & (1 << 0))
-    {
-        GPIOD->ODR ^= (1 << 12);
-        while (!(SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk))
-            ;
-        EXTI->PR = (1 << 0);
+    static uint8_t current = 12;
+    static uint32_t Period = 0;
+     if(Period==0){
+        Period=SystemCoreClock;
     }
+    static uint8_t Recur=0;
+   
+    GPIOD->ODR&=~(0b1111<<12);
+    GPIOD->ODR|=(1<<current);
+    
+    current++;
+    if (current == 16)
+    {
+       
+        Period = Period / 2;
+        SysTick->LOAD=(uint32_t)(Period - 1UL); ;
+        SysTick->VAL=0UL;
+        current = 12;
+        Recur++;
+        if(Recur==4){
+        Period=Period*2;
+        Recur--;
+    }
+    }
+  
+
 }
