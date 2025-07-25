@@ -17,7 +17,14 @@ int main(void)
 {
     __enable_irq();
     GPIO_Init();
-    SysTick_Config(SystemCoreClock);
+    RCC->CR|=RCC_CR_HSEON_Msk;
+    while (!(RCC->CR & RCC_CR_HSERDY_Msk));
+    RCC->CFGR=RCC_CFGR_SW_HSE;
+    SysTick->CTRL|=(SysTick_CTRL_ENABLE_Msk|SysTick_CTRL_TICKINT_Msk|SysTick_CTRL_CLKSOURCE_Msk);
+    SysTick->LOAD=(uint32_t)(SystemCoreClock-1UL);
+    SysTick->VAL=0UL;
+    NVIC_SetPriority(SysTick_IRQn,5);
+
 
     while (1)
     {
