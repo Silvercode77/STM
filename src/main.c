@@ -1,15 +1,17 @@
 #include "stm32f407xx.h"
 #include "GPIO.h"
-int main()
+/*int main()
 {
 
     RCC->AHB1RSTR |= RCC_AHB1RSTR_GPIODRST;
     RCC->AHB1RSTR &= ~(RCC_AHB1RSTR_GPIODRST);
     RCC->AHB1ENR |= RCC_AHB1ENR_GPIODEN;
     RCC->APB2ENR |= RCC_APB2ENR_SYSCFGEN;
-
+    
     GPIOD->MODER &= ~((3 << 9 * 2) | (3 << (12 * 2)));
+
     GPIOD->MODER |= ((GPIO_MODER_INPUT << (9 * 2)) | (GPIO_MODER_OUTPUT << (12 * 2)));
+    GPIOD->MODER|=((GPIO_MODER_OUTPUT<<(15*2)));
 
     GPIOD->PUPDR &= ~(3 << (9 * 2));
     GPIOD->PUPDR |= (GPIO_PULLUP << (9 * 2));
@@ -25,7 +27,7 @@ int main()
 
     while (1)
     {
-      
+      GPIOD->ODR|=(1<<(15));
 }
 }
 void EXTI9_5_IRQHandler()
@@ -34,4 +36,4 @@ void EXTI9_5_IRQHandler()
         GPIOD->ODR ^= (1 << 12);
         EXTI->PR = (1 << 9);           
     }
-}
+}*/
