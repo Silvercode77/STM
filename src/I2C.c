@@ -5,7 +5,7 @@
 #define EEPROM 0x50
 #define WRITE_BIT 0b0
 #define READ_BIT 0b1
-c
+
 void main()
 {
   RCC->APB1ENR |= RCC_APB1ENR_I2C1EN;
