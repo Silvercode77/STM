@@ -1,74 +1,94 @@
 #include "stm32f4xx.h"
 #include "GPIO.h"
-#include<stdio.h>
+#include <stdio.h>
 
-
-	void GPIO_MODER_CONFIGURATION(GPIO_TypeDef* GPIOx,CONFIGURATION CONF_Bit,PIN_NUMBER Pin ){
-		
-	GENERAL_SETPIN(GPIOx->MODER, CONF_Bit, Pin);
-	GENERAL_CLEARPIN(GPIOx->MODER,REVERSE_BIT(CONF_Bit,2),Pin);
-		
+void GPIO_MODER_CONFIGURATION(GPIO_TypeDef *GPIOx, CONFIGURATION CONF_Bit, PinPosition Pin)
+{
+	uint32_t iocurrent;
+	for (uint8_t i= 0; i < 16; i++)
+	{
+		iocurrent=(1<<i);
+		if (iocurrent & Pin)
+		{
+			GENERAL_SETPIN(GPIOx->MODER, CONF_Bit, i);
+			GENERAL_CLEARPIN(GPIOx->MODER, REVERSE_BIT(CONF_Bit, 2), i);
+		}
 	}
-	
-	
-void GPIO_OSPEEDR_CONFIGURATION(GPIO_TypeDef* GPIOx,CONFIGURATION CONF_Bit,PIN_NUMBER Pin ){
-	
-			GENERAL_SETPIN(GPIOx->OSPEEDR, CONF_Bit, Pin);
-			GENERAL_CLEARPIN(GPIOx->OSPEEDR,REVERSE_BIT(CONF_Bit,2),Pin);
-		
-	}
-
-
-	void GPIO_PUPDR_CONFIGURATION(GPIO_TypeDef* GPIOx,CONFIGURATION CONF_Bit,PIN_NUMBER Pin ){
-			GENERAL_SETPIN(GPIOx->PUPDR, CONF_Bit, Pin);
-			GENERAL_CLEARPIN(GPIOx->PUPDR,REVERSE_BIT(CONF_Bit,2),Pin);
-		
-	}
-	
-	
-	
-
-void GPIO_OTYPER_CONFIGURATION(GPIO_TypeDef* GPIOx,CONFIGURATION CONF_Bit,PIN_NUMBER Pin ){
-	GENERAL_SETBIT(GPIOx->OTYPER, CONF_Bit, Pin);
-	GENERAL_CLEARBIT(GPIOx->OTYPER,REVERSE_BIT(CONF_Bit,1),Pin);
-
 }
 
-
-
-void GPIO_Write_Pin(GPIO_TypeDef* GPIOx,BITVAL Bit,PIN_NUMBER Pin ){
-	
-	GENERAL_SETBIT(GPIOx->ODR,Bit,Pin);
-	GENERAL_CLEARBIT(GPIOx->ODR,REVERSE_BIT(Bit,1),Pin);
+void GPIO_OSPEEDR_CONFIGURATION(GPIO_TypeDef *GPIOx, CONFIGURATION CONF_Bit, PinPosition Pin)
+{
+    uint32_t iocurrent;
+    for (uint8_t i = 0; i < 16; i++)
+    {
+        iocurrent = (1 << i);
+        if (iocurrent & Pin)
+        {
+            GENERAL_SETPIN(GPIOx->OSPEEDR, CONF_Bit, i);
+            GENERAL_CLEARPIN(GPIOx->OSPEEDR, REVERSE_BIT(CONF_Bit, 2), i);
+        }
+    }
 }
 
+void GPIO_PUPDR_CONFIGURATION(GPIO_TypeDef *GPIOx, CONFIGURATION CONF_Bit, PinPosition Pin)
+{
+    uint32_t iocurrent;
+    for (uint8_t i = 0; i < 16; i++)
+    {
+        iocurrent = (1 << i);
+        if (iocurrent & Pin)
+        {
+            GENERAL_SETPIN(GPIOx->PUPDR, CONF_Bit, i);
+            GENERAL_CLEARPIN(GPIOx->PUPDR, REVERSE_BIT(CONF_Bit, 2), i);
+        }
+    }
+}
 
+void GPIO_OTYPER_CONFIGURATION(GPIO_TypeDef *GPIOx, CONFIGURATION CONF_Bit, PinPosition Pin)
+{
+    uint32_t iocurrent;
+    for (uint8_t i = 0; i < 16; i++)
+    {
+        iocurrent = (1 << i);
+        if (iocurrent & Pin)
+        {
+            GENERAL_SETBIT(GPIOx->OTYPER, CONF_Bit, i);
+            GENERAL_CLEARBIT(GPIOx->OTYPER, REVERSE_BIT(CONF_Bit, 1), i);
+        }
+    }
+}
 
-	
-	BITVAL GPIO_Read_Pin(GPIO_TypeDef* GPIOx,PIN_NUMBER Pin ){
-		uint8_t r=(GPIOx->IDR & (1U<<Pin));
-		return (r==1 ? HIGH:LOW);
-		
-	
-	}
-	
-	void GPIO_Toggle_Pin(GPIO_TypeDef* GPIOx,PIN_NUMBER Pin){
-		GENERAL_TOGGLEBIT(GPIOx->ODR, HIGH, Pin);
-	}
-	
-	
-	
-	void GPIO_CLOCK_EN(GPIO_SELECT GPIO){
-	GENERAL_SETBIT(RCC->AHB1ENR,HIGH,GPIO);
-	}
-	
-	
-	void GPIO_RESET(GPIO_SELECT GPIO){
-		GENERAL_SETBIT(RCC->AHB1RSTR,HIGH,GPIO);
-		GENERAL_CLEARBIT(RCC->AHB1RSTR,HIGH,GPIO);
-	}
-	
+void GPIO_Write_Pin(GPIO_TypeDef *GPIOx, BITVAL Bit, PIN_NUMBER Pin)
+{
 
-	
-	void delay(volatile unsigned int i) {
-    for (; i > 0; i--);}
+	GENERAL_SETBIT(GPIOx->ODR, Bit, Pin);
+	GENERAL_CLEARBIT(GPIOx->ODR, REVERSE_BIT(Bit, 1), Pin);
+}
+
+BITVAL GPIO_Read_Pin(GPIO_TypeDef *GPIOx, PIN_NUMBER Pin)
+{
+	uint8_t r = (GPIOx->IDR & (1U << Pin));
+	return (r == 1 ? HIGH : LOW);
+}
+
+void GPIO_Toggle_Pin(GPIO_TypeDef *GPIOx, PIN_NUMBER Pin)
+{
+	GENERAL_TOGGLEBIT(GPIOx->ODR, HIGH, Pin);
+}
+
+void GPIO_CLOCK_EN(GPIO_SELECT GPIO)
+{
+	GENERAL_SETBIT(RCC->AHB1ENR, HIGH, GPIO);
+}
+
+void GPIO_RESET(GPIO_SELECT GPIO)
+{
+	GENERAL_SETBIT(RCC->AHB1RSTR, HIGH, GPIO);
+	GENERAL_CLEARBIT(RCC->AHB1RSTR, HIGH, GPIO);
+}
+
+void delay(volatile unsigned int i)
+{
+	for (; i > 0; i--)
+		;
+}

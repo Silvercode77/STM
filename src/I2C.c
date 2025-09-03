@@ -6,7 +6,7 @@
 #define WRITE_BIT 0b0
 #define READ_BIT 0b1
 
-void main()
+/*void main()
 {
   RCC->APB1ENR |= RCC_APB1ENR_I2C1EN;
   RCC->AHB1ENR |= RCC_AHB1ENR_GPIOBEN;
@@ -41,4 +41,4 @@ while (!(I2C1->SR1 & I2C_SR1_TXE));
   // I2C1->DR = (EEPROM << 1) | READ_BIT;
 
   I2C1->CR1 |= I2C_CR1_STOP;*/
-}
+
