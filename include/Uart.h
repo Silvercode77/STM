@@ -2,7 +2,7 @@
 #include"GPIO.h"
 
 
-
+//DONT FORGET TO RCC ENABLE PLS
 
 UartPinConfiguration(USART_TypeDef * USART,GPIO_TypeDef *GPIO,PIN_NUMBER Pin_Tx,PIN_NUMBER Pin_Rx){ //Be carefull We need the pin nmber not position here
 
@@ -16,6 +16,7 @@ UartPinConfiguration(USART_TypeDef * USART,GPIO_TypeDef *GPIO,PIN_NUMBER Pin_Tx,
 UartModeConfiguration(USART_TypeDef * USART,uint8_t CR1_FLAGS,uint8_t CR2_FLAGS,uint8_t CR3_FLAGS){
 CLEAR_REG(USART->CR1);
 CLEAR_REG(USART->CR2);
+CLEAR_REG(USART->CR3);
 USART->CR1|=(USART_CR1_UE|CR1_FLAGS);
 USART->CR2|=(CR2_FLAGS);
 USART->CR3|=(CR3_FLAGS);
