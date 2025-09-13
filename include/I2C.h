@@ -21,7 +21,7 @@ void I2CModeConfigure(I2C_TypeDef *I2C, uint32_t APB1CLK, uint32_t SCL_Freq, uin
     I2C->CR1 &= ~I2C_CR1_PE;
 
     I2C->CR2 = APB1CLK;  // PCLK1 = 16 MHz
-    I2C->CCR = SCL_Freq; // 100kHz standard mode
+    I2C->CCR = SCL_Freq; // 100kHz standard mode SCL_Freq=80
     I2C->TRISE = Trise;  // TRISE = (1000ns / T_PCLK) + 1 = 17
 
     I2C->CR1 |= I2C_CR1_PE; // Enable I2C

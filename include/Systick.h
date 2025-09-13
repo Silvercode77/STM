@@ -1,8 +1,7 @@
 #include "stm32f407xx.h"
 
 
-
-void SystickNoInt(uint32_t SecDiv);
+int SystickSec(float PeriodSec);
 
 
 void SysTick_Init(void);

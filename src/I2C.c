@@ -2,7 +2,7 @@
 #include "GPIO.h"
 #include <stdio.h>
 #include "I2C.h"
-#define EEPROM 0x50
+#define EEPROM 0x51
 #define WRITE_BIT 0b0
 #define READ_BIT 0b1
 
@@ -24,11 +24,12 @@
   I2CStart(I2C1);
 
   I2CAdress(I2C1, 0x50, WRITE_BIT);
-  I2CWriteByte(I2C1, 0x00);
+  I2CWriteByte(I2C1, 0x78);
   while (!(I2C1->SR1 & I2C_SR1_TXE))
     ;
   I2CWriteByte(I2C1, 0X98);
-  I2C1->CR1 |= I2C_CR1_STOP;
+  I2C1->CR1 |= I2C_CR1_STOP; 
+}*/
   /*I2C1->CR1 |= I2C_CR1_START;
   while (!(I2C1->SR1 & I2C_SR1_SB));
 
