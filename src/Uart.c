@@ -35,19 +35,6 @@ GPIOD->ODR^=(1<<15);
         while(!(UART4->SR & USART_SR_TC));
     }
 
-/*UART4->DR='a';
-while(!(UART4->SR & USART_SR_TC));
-UART4->DR='b';
-while(!(UART4->SR & USART_SR_TC));
-UART4->DR='c';
-while(!(UART4->SR & USART_SR_TC));
-UART4->DR='d';
-while(!(UART4->SR & USART_SR_TC));
-UART4->DR='f';
-while(!(UART4->SR & USART_SR_TC));
-UART4->DR='g';
-while(!(UART4->SR & USART_SR_TC));*/
-
 
 CheckSysTimer();
 
