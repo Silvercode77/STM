@@ -1,6 +1,11 @@
+#ifndef UART_H
+#define UART_H
 #include"stm32f407xx.h"
 #include"GPIO.h"
+#include"RCC.h"
 
+#define RCC_CR1_OVR8 0b1
+#define RCC_CR1_OVR16 0b0
 
 //DONT FORGET TO RCC ENABLE PLS
 
@@ -24,15 +29,32 @@ USART->CR3|=(CR3_FLAGS);
 
 }
 
-UartBaudarate(USART_TypeDef * USART,uint32_t Baudrate,uint32_t APBCLK){ //Formula UART->BRR=APBCLK/((8*(2-OVR8))*Baudrate)
-uint8_t OVR8=(USART->CR1&USART_CR1_OVER8_Msk)>>USART_CR1_OVER8_Pos;
-float ResultPart=(APBCLK/((16*Baudrate)));
-uint32_t Intpart=(uint32_t) (ResultPart);
-uint16_t floatpart= (ResultPart-Intpart)*16;
-USART->BRR=(Intpart<<4)|floatpart;
+void UartBaudrate(USART_TypeDef *USART, uint32_t PCLK, uint32_t Baudrate,uint8_t OVRSAMPLE)
+{
+   GENERAL_CFGRBIT(USART->CR1,OVRSAMPLE,USART_CR1_OVER8_Pos,1);
+   uint8_t OVR8 = (USART->CR1 & USART_CR1_OVER8_Msk) >> USART_CR1_OVER8_Pos;
+    uint32_t USARTDIV;
+    uint32_t mantissa;
+    uint32_t fraction;
+
+    if (OVR8 == 0) // 16x oversampling
+    {
+        USARTDIV = (PCLK/ Baudrate)+0.5; // because they are int a/b egts truced auto to the lowest int the fraction part is discarded so 
+        mantissa = USARTDIV / 16;        //we add 0.5 if its 8.4 +0.5 its 8.9 it gets truced so its stil 8 but if its > 8.5 it becomes 9 
+        fraction = USARTDIV % 16;
+        USART->BRR = (mantissa << 4) | fraction;
+    }
+    else // 8x oversampling
+    {
+        USARTDIV = (PCLK + (Baudrate/2)) / Baudrate; // another method of rounding 
+        mantissa = USARTDIV / 8;
+        fraction = USARTDIV % 8;
+        USART->BRR = (mantissa << 3) | fraction;
+    }
 }
 
-UartWrite(USART_TypeDef * UART, void* buf,size_t size){
+
+void UartWrite(USART_TypeDef * UART, void* buf,size_t size){
 
     
 uint8_t * buffer=(uint8_t*)buf;
@@ -41,6 +63,10 @@ uint8_t * buffer=(uint8_t*)buf;
         while(!(UART4->SR & USART_SR_TC));
     }
 }
+
+/*void UartRead(){
+
+}*/
 
 typedef enum {
 
@@ -53,3 +79,7 @@ typedef enum {
 
 
 }USART_BAUDRATE;
+
+
+
+#endif

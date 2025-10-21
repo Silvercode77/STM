@@ -3,7 +3,7 @@
 #include "stm32f4xx.h"
 #include "GPIO.h"
 #include <stdio.h>
-
+#include"RCC.h"
 void I2CPinConfigure(GPIO_TypeDef *GPIO, I2C_TypeDef* I2C, PIN_NUMBER SCL_Pin, PIN_NUMBER SDA_Pin)
 {
     GPIO->MODER &= ~((0b11 << (SCL_Pin * 2)) | (0b11 << (SDA_Pin * 2))); // Clear bits
@@ -16,11 +16,11 @@ void I2CPinConfigure(GPIO_TypeDef *GPIO, I2C_TypeDef* I2C, PIN_NUMBER SCL_Pin, P
     GPIO->PUPDR |= (GPIO_PULLUP << (SCL_Pin * 2)) | (GPIO_PULLUP << (SDA_Pin * 2));    // Pull-up
 }
 
-void I2CModeConfigure(I2C_TypeDef *I2C, uint32_t APB1CLK, uint32_t SCL_Freq, uint32_t Trise)
+void I2CModeConfigure(I2C_TypeDef *I2C, uint32_t PCL, uint32_t SCL_Freq, uint32_t Trise)
 {
     I2C->CR1 &= ~I2C_CR1_PE;
 
-    I2C->CR2 = APB1CLK;  // PCLK1 = 16 MHz
+    I2C->CR2 = PCLK1;  // PCLK1 = 16 MHz
     I2C->CCR = SCL_Freq; // 100kHz standard mode SCL_Freq=80
     I2C->TRISE = Trise;  // TRISE = (1000ns / T_PCLK) + 1 = 17
 

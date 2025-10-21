@@ -13,14 +13,15 @@
   RCC->AHB1ENR |= RCC_AHB1ENR_GPIODEN;
   // uint8_t x = 8;
 
+  
   // Set PB6 and PB7 to alternate function (AF4 for I2C1)
   I2CPinConfigure(GPIOB, I2C1, PIN_6, PIN_7);
   GPIO_MODER_CONFIGURATION(GPIOD, GPIO_MODER_OUTPUT, 15);
   GPIOD->ODR |= (1 << 15);
 
   // GPIOB->AFR[0] |= (4 << GPIO_AFRL_AFSEL6_Pos | 4 << GPIO_AFRL_AFSEL7_Pos);
-  I2CModeConfigure(I2C1, 16, 80, 17);
 
+  I2CModeConfigure(I2C1, 16, 80, 17);
   I2CStart(I2C1);
 
   I2CAdress(I2C1, 0x50, WRITE_BIT);
