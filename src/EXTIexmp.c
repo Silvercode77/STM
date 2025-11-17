@@ -1,6 +1,7 @@
 #include "stm32f407xx.h"
 #include "GPIO.h"
-int main()
+
+int example()
 {
 
     RCC->AHB1RSTR |= RCC_AHB1RSTR_GPIODRST;
@@ -36,4 +37,4 @@ void EXTI9_5_IRQHandler()
         GPIOD->ODR ^= (1 << 12);
         EXTI->PR = (1 << 9);           
     }
-}*/
+}
