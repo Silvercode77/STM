@@ -1,6 +1,6 @@
 #include "stm32f407xx.h"
 #include "GPIO.h"
-/*int main()
+int main()
 {
 
     RCC->AHB1RSTR |= RCC_AHB1RSTR_GPIODRST;
@@ -16,7 +16,7 @@
     GPIOD->PUPDR &= ~(3 << (9 * 2));
     GPIOD->PUPDR |= (GPIO_PULLUP << (9 * 2));
     SYSCFG->EXTICR[2] &= ~(0xF << 4); 
-    SYSCFG->EXTICR[2] |= (0x3 << 4); 
+    SYSCFG->EXTICR[2] |= (0x3 << 4); /*SYSCFG_EXTi*/
 
     EXTI->IMR |= (EXTI_IMR_MR9);
     EXTI->RTSR &= ~(EXTI_RTSR_TR9);
